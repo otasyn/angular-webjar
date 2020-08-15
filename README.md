@@ -1,27 +1,143 @@
-# AngularWebjar
+Angular Webjar
+==============
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.5.
+This project is meant is an example/template of an Angular project
+that builds a WebJar.  It is designed to be used with a Java servlet
+container, but it should be compatible with other web projects that
+accept WebJars.
 
-## Development server
+Angular
+-------
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+This project was generated with
+[Angular CLI](https://github.com/angular/angular-cli) version 10.0.5.
 
-## Code scaffolding
+This project uses Angular CLI to generate project files.  Only a few
+minor changes have been made from the generated project.  Notably,
+`angular.json` can be used to specify to output directory for the
+generated files that will be bundled into a WebJar.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Gradle
+------
 
-## Build
+Gradle is used to build and publish the WebJar.  It is configured to
+publish both snapshots and production builds based on the version.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+### Building Angular project
 
-## Running unit tests
+There are several ways to execute an Angular CLI build from Gradle,
+but this project uses the plugin `com.moowork.node`.  It generates
+several standard npm tasks that can be used.  For this project,
+the `npm_run_build` task is most relevant.  Basically, it is the
+same as typing `npm run build` into the command line.  The `build`
+script is defined in `package.json` unders `scripts`.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash
+$ ./gradlew npm_run_build
+```
 
-## Running end-to-end tests
+In `package.json`, you could define additional scripts and run
+them in the same way.
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+```bash
+$ ./gradlew npm_run_flyKite
+```
 
-## Further help
+This plugin also lets you define the versions of Node and npm
+to use.  This project is set to use whichever version is
+available, and the version is set using Node Version Manager
+and `.nvmrc`.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+_Source: https://plugins.gradle.org/plugin/com.moowork.node_
+
+### Creating a JAR
+
+Creating a JAR file depends upon the plugin `java`.  The project
+does not necessarily need to include Java code for using this
+plugin.  It's only needed for bundling the files into a JAR.
+
+#### Bundling the generated files
+
+In the `jar` block, specify where to get the generated project files
+using `from` and where to put them inside the JAR using `into`.  In
+this project, Angular CLI is configured to put them into different
+directories depending upon the version name, but that is not
+required.  For a WebJar, the contents must be put into
+`META-INF/resources/webjars/${archivesBaseName}/${project.version}`.
+
+```groovy
+jar {
+  from `dist/angular-webjar/`
+  into `META-INF/resources/webjars/${archivesBaseName}/${project.version}`
+}
+```
+
+_Source: https://www.webjars.org/contributing_
+
+### Publishing
+
+Publishing depends upon the plugin `maven-publish`.
+
+#### Local Repo
+
+To publish to a local repo, such as `$HOME/.m2/repository`:
+
+```bash
+$ ./gradlew publishToMavenLocal
+```
+
+#### Remote Repo
+
+To publish to a remote repo, make sure that you have the repo URL
+and credentials in a `gradle.properties` file, such as
+`$USER_HOME/.gradle/gradle.properties`.  These properties should
+look something like:
+
+```bash
+# Angular Webjar Repo
+repoUrl=http://repo.com/repository
+repoUsername=otasyn
+repoPassword=password
+```
+
+Then, to publish it:
+
+```bash
+$ ./gradlew publishAngularWebjarPublicationToTemplateRepoRepository
+```
+
+In `publishAngularWebjarPublicationToTemplateRepoRepository`, the
+_AngularWebjar_ portion is taken from the name of the publication
+in the `publications` block of `publishing`.  This can be renamed
+to whatever you like.
+
+```groovy
+publishing {
+  publications {
+    angularWebjar(MavenPublications) {
+      from components.java
+    }
+  }
+  ...
+}
+```
+
+The _TemplateRepo_ portion is taken from the name of the repo that
+is defined in the `repositories` block of `publishing`.  Inside
+the `maven` block, set the `name` property to whatever you like.
+
+```groovy
+publishing {
+  ...
+  repositories {
+    maven {
+      name 'TemplateRepo'
+      url 'http://repo.com/repository'
+      credentials {
+        username 'otasyn'
+        password 'password'
+      }
+    }
+  }
+}
+```
