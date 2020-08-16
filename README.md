@@ -13,9 +13,21 @@ This project was generated with
 [Angular CLI](https://github.com/angular/angular-cli) version 10.0.5.
 
 This project uses Angular CLI to generate project files.  Only a few
-minor changes have been made from the generated project.  Notably,
+changes have been made from the generated project.  Notably,
 `angular.json` can be used to specify to output directory for the
 generated files that will be bundled into a WebJar.
+
+### Generated index
+
+In `angular.json`, the `index` file can be specified.  By default,
+this is `src/index.html`.  In this project, that has been changed
+to `src/includes.jsp`.  This is so that the generated `<script>`
+tags can be included into another JSP file in the servlet container
+project.
+
+Also, the build is executed with the `--deploy-url` argument so
+that the paths of those files can be set to reflect the path
+used in the WebJar.
 
 Gradle
 ------

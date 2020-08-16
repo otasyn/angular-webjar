@@ -7,8 +7,13 @@ plugins {
 group 'org.otasyn.template'
 version '0.1.0-SNAPSHOT'
 
-/* Determine if working with a snapshot. */
-def isSnapshot = version.endsWith('SNAPSHOT')
+ext {
+  /* Determine if working with a snapshot. */
+  isSnapshot = version.endsWith('SNAPSHOT')
+
+  /* The path in which generated files will be stored. */
+  webjarPath = "webjars/${archivesBaseName}/${project.version}/"
+}
 
 node {
    /* https://github.com/srs/gradle-node-plugin/blob/master/docs/node.md#configuring-the-plugin */
@@ -19,13 +24,11 @@ node {
  * If npm_install is running slow, check the npm config.  It should be:
  *   package-lock=true
  */
-task npmBuild {
-  if (isSnapshot) {
-    println 'Building snapshot.'
-    dependsOn npm_run_build
-  } else {
-    println 'Building production.'
-    dependsOn npm_run_buildProd
+task npmBuild(type: NpmTask) {
+  dependsOn npmInstall
+  args = ['run', 'build', '--', "--deploy-url=${webjarPath}"]
+  if (!isSnapshot) {
+    args << '--prod'
   }
 }
 
@@ -41,7 +44,7 @@ jar {
   } else {
     from 'dist/angular-webjar/production'
   }
-  into "META-INF/resources/webjars/${archivesBaseName}/${project.version}"
+  into "META-INF/resources/${webjarPath}"
 }
 
 /**
