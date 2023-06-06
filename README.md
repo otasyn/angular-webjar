@@ -1,10 +1,10 @@
 Angular Webjar
 ==============
 
-This project is meant is an example/template of an Angular project
-that builds a WebJar.  It is designed to be used with a Java servlet
-container, but it should be compatible with other web projects that
-accept WebJars.
+This project is a skeleton of an Angular project that builds a WebJar.
+It is designed to be used with a Java servlet container, such as
+[jersey2-guice](https://github.com/otasyn/jersey2-guice), but it should
+be compatible with other web projects that accept WebJars.
 
 Angular
 -------
