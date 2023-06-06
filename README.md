@@ -10,7 +10,7 @@ Angular
 -------
 
 This project was generated with
-[Angular CLI](https://github.com/angular/angular-cli) version 15.2.9.
+[Angular CLI](https://github.com/angular/angular-cli) version 16.0.4.
 
 This project uses Angular CLI to generate project files.  Only a few
 changes have been made from the generated project.  Notably,
