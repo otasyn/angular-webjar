@@ -44,7 +44,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -61,18 +60,19 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "dev-server": {
+              "outputPath": "dist/angular-webjar/dev-server",
+              "index": "src/index.html"
             }
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angular-webjar:build"
+            "browserTarget": "angular-webjar:build:dev-server"
           },
           "configurations": {
-            "production": {
-              "browserTarget": "angular-webjar:build:production"
-            }
           }
         },
         "extract-i18n": {
