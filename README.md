@@ -38,7 +38,7 @@ publish both snapshots and production builds based on the version.
 ### Building Angular project
 
 There are several ways to execute an Angular CLI build from Gradle,
-but this project uses the plugin `com.moowork.node`.  It generates
+but this project uses the plugin `gradle-node-plugin`.  It generates
 several standard npm tasks that can be used.  For this project,
 the `npm_run_build` task is most relevant.  Basically, it is the
 same as typing `npm run build` into the command line.  The `build`
@@ -55,12 +55,25 @@ them in the same way.
 $ ./gradlew npm_run_flyKite
 ```
 
-This plugin also lets you define the versions of Node and npm
-to use.  This project is set to use whichever version is
-available, and the version is set using Node Version Manager
-and `.nvmrc`.
+### Testing with Karma
 
-_Source: https://plugins.gradle.org/plugin/com.moowork.node_
+Karma will need the Chrome browser for tests.  If this is done in
+a headless environment, such as WSL Ubuntu, Chromium and puppeteer
+will be used.
+
+1. Install necessary packages.
+
+```bash
+$ sudo apt-get update
+$ sudo apt-get install curl unzip xvfb libxi6 libgconf-2-4
+```
+
+2. Install Chromium.
+
+```bash
+$ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+$ sudo apt install ./google-chrome-stable_current_amd64.deb
+```
 
 ### Creating a JAR
 
